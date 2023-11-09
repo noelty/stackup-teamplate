@@ -6,6 +6,7 @@ var hbs = require('express-handlebars');
 var logger = require('morgan');
 var db = require('./config/connection');
 var session=require('express-session');
+var fileUpload = require('express-fileupload');
 
 var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/user');
@@ -24,11 +25,19 @@ db.connect((err) => {
   else console.log("Database connected");
 });
 
+hbs.create().handlebars.registerHelper('add', function(index, number) {
+  return index + number;
+});
+hbs.create().handlebars.registerHelper('eq' ,function (page,key){
+  return (page == key)?1:0;
+});
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileUpload());
 
 app.use('/', usersRouter);
 app.use('/admin', adminRouter);

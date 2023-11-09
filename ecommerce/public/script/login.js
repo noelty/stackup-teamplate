@@ -84,7 +84,8 @@ createClick.addEventListener('click', () => {
       const signUpData = {
         Name: $('.signUpName').val(),
         Email: $('.signUpEmail').val(),
-        Password: $('.signUpPassword').val()
+        Password: $('.signUpPassword').val(),
+        ConfirmPassword: $('.signUpPasswordConfirm').val()
       };
 
 
