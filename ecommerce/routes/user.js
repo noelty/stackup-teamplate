@@ -28,7 +28,7 @@ router.get('/',verifyLogin, async function(req, res, next) {
   if(user){
     cartCount=await userHelpers.getCartCount(req.session.user._id);
   }
-  res.render('user/home', {categories,highlights,user,cartCount,accountType:'user'});
+  res.render('user/home', {categories,highlights,user,cartCount,page:'home'});
 });
 
 router.get('/login', (req,res)=>{
@@ -36,13 +36,22 @@ router.get('/login', (req,res)=>{
     res.redirect('/');
   }
   else{
-    res.render('user/signin-signup',{title:'Login page'});
+    res.render('user/signin-signup',{title:'Login page',page:'login'});
   }
 });
 
 router.post('/signup',(req,res)=>{
-  console.log(req.body)
-  userHelpers.doSignup(req.body).then((response)=>{
+  if(req.body.Password == "" || req.body.Name == "" || req.body.Email == "")
+  {
+    res.json({success:false,err:'input all fields!'});
+  }
+  else if(req.body.Password != req.body.ConfirmPassword)
+  {
+    res.json({success:false,err:'Password do not match, please try again.'});
+  }
+  else
+  {
+    userHelpers.doSignup(req.body).then((response)=>{
     console.log(response);
     req.session.loggedIn=true;
     req.session.user=req.body;
@@ -50,6 +59,7 @@ router.post('/signup',(req,res)=>{
   }).catch((err)=>{
     res.json({success:false,err})
   })
+}
 });
 
 
